@@ -53,10 +53,10 @@ Jenkins
 This check will use the output of the command '/etc/init.d/jenkins status' to throw some messages to the icinga server:
 
 	OK status:
-	SERVICE STATUS: jenkins (pid  XXX) is running...
+	SERVICE STATUS: jenkins (pid  XXXX) is running
 
 	Warning status:
-	SERVICE STATUS: jenkins (pid  2877) is running...
+	SERVICE STATUS: jenkins (pid  XXXX) is stopped
 
 	Critical status:
 	SERVICE STATUS: jenkins is not running
