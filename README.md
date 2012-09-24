@@ -1,4 +1,4 @@
-icinga-scripts
+Icinga-scripts
 ==============
 
 Customized scripts to use with the icinga (1.6.x) monitoring tool on CentOS 6 machines.
@@ -15,20 +15,20 @@ Server side:
 
 I added the commands to the file '/etc/icinga/objects/commands.cfg' like this:
 
-define command {
-  command_name    check_NAME
-  command_line    $USER1$/check_NAME
-}
+	define command {
+		command_name    check_NAME	
+		command_line    $USER1$/check_NAME
+	}	
 
 To configure the specified service I added this config to a node in '/etc/icinga/objects/services':
 
-define service {
-        service_description            DESCRIPTION
-        check_command                  check_nrpe_command!check_NAME
-        use                            generic-service
-        notification_period            24x7
-        host_name                      HOSTNAME.OF.SERVER
-}
+	define service {
+        	service_description            DESCRIPTION
+	        check_command                  check_nrpe_command!check_NAME
+        	use                            generic-service
+	        notification_period            24x7
+	        host_name                      HOSTNAME.OF.SERVER
+	}
 
 And restart the icinga service (/etc/init.d/icinga restart)
 
@@ -39,10 +39,9 @@ On the client we need to add the script into for example the default directory '
 
 Also the nrpe configuration, '/etc/nagios/nrpe.cfg' needs to be adopted:
 
-'command[check_NAME]=/usr/lib64/nagios/plugins/check_NAME'
+	"command[check_NAME]=/usr/lib64/nagios/plugins/check_NAME"
 
 and restart the nrpe daemon (/etc/init.d/nrpe restart)
-
 
 After a few minutes the check should appear into your icinga front-end.
 
