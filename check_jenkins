@@ -1,0 +1,30 @@
+#!/bin/sh
+#
+# Author:  Jan Collijs
+# Email:   jan.collijs@ inuits.eu
+# Date:    21/09/2012
+# Purpose: Icinga-check to monitor a jenkins service
+
+. $PROGPATH/utils.sh
+
+print_usage() {
+    echo "Usage: check_jenkins"
+    echo "e.g. check_jenkins"
+    }
+
+RUNNING_STATUS=`/etc/init.d/jenkins status`
+
+case "$RUNNING_STATUS" in
+   *"running"*)
+      echo "SERVICE STATUS: $RUNNING_STATUS"
+      exit $STATE_OK
+   ;;
+   *"stopped"*)
+      echo "SERVICE STATUS: $RUNNING_STATUS"
+      exit $STATE_WARNING
+   ;;
+   *)
+      echo "SERVICE STATUS: jenkins service is not running"
+      exit $STATE_CRITICAL
+   ;;
+esac
