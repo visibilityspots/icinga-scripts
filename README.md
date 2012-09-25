@@ -49,7 +49,9 @@ Jenkins
 This check will use the output of 
 
   the command '/etc/init.d/jenkins status'
+
   counts the updates related to jenkins 'yum check-update | grep jenkins | wc -l'
+
   checks if the config file '/var/lib/jenkins/config.xml' is still present
 
 to throw some messages to the icinga server:
