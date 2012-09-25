@@ -50,13 +50,13 @@ Jenkins
 
 (I wrote this first check to see how icinga needs to be configured to manage customized scripts.)
 
-This check will use the output of the command '/etc/init.d/jenkins status' to throw some messages to the icinga server:
+This check will use the output of the command '/etc/init.d/jenkins status' and will count the updates related to jenkins 'yum check-update | grep jenkins | wc -l' to throw some messages to the icinga server:
 
 	OK status:
-	SERVICE STATUS: jenkins (pid  XXXX) is running
+	OK: jenkins (pid  XXXX) is running / OK: No updates available
 
 	Warning status:
-	SERVICE STATUS: jenkins (pid  XXXX) is stopped
+	WARNING: jenkins (pid  XXXX) is stopped / WARNING: X updates available
 
 	Critical status:
-	SERVICE STATUS: jenkins is not running
+	CRITICAL: jenkins is not running / OK or WARNING state about updates overridden by the CRITICAL state of the service
