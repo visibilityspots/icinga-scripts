@@ -46,6 +46,8 @@ After a few minutes the check should appear into your icinga front-end.
 Jenkins
 =======
 
+Make sure the jenkins service has got the proper permissions (chmod 644 /etc/sysconfig/jenkins). Else the nrpe daemon could not read the output!
+
 This check will use the output of 
 
 *  the command '/etc/init.d/jenkins status'
