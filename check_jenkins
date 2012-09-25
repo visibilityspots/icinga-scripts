@@ -1,0 +1,69 @@
+#!/bin/sh
+#
+# Author:  Jan Collijs
+# Email:   jan.collijs@inuits.eu
+# Date:    September 2012
+# Purpose: Icinga-check to monitor a jenkins service
+
+PROGNAME=`basename $0`
+PROGPATH=`echo $0 | sed -e 's,[\\/][^\\/][^\\/]*$,,'`
+REVISION=`echo '$Revision: 1.00 $' | sed -e 's/[^0-9.]//g'`
+
+. $PROGPATH/utils.sh
+
+# Retrieving the service status and number of jenkins updates
+RUNNING_STATUS=`/etc/init.d/jenkins status`
+UPDATE=`yum check-update | grep jenkins | wc -l`
+
+# Compiling the updates message
+if [ "$UPDATE" -gt 0 ]; then
+  UPDATES="WARNING: $UPDATE updates available"
+  USTATE=$STATE_WARNING
+else
+  UPDATES="OK: No updates available"
+  USTATE=$STATE_OK
+fi
+
+# Compiling the service message
+case "$RUNNING_STATUS" in
+   *"running"*)
+      SERVICE="OK: $RUNNING_STATUS"
+      SSTATE=$STATE_OK
+   ;;
+   *"stopped"*)
+      SERVICE="WARNING: $RUNNING_STATUS"
+      SSTATE=$STATE_WARNING
+   ;;
+   *)
+      SERVICE="CRITICAL: jenkins service is not running"
+      SSTATE=$STATE_CRITICAL
+   ;;
+esac
+
+# Combing the multiple messages in 1 line and distributing it
+echo "$SERVICE / $UPDATES"
+
+# Retrieving the correct state for icinga and distributing it
+if [ $SSTATE -lt 0 -o $SSTATE -gt 3 -o $USTATE -lt 0 -o $USTATE -gt 3 ]; then
+  STATE=$STATE_UNKNOWN
+  elif [ $SSTATE -eq 0 -a $USTATE -eq 0 ]; then
+    STATE=$STATE_OK
+elif [ $SSTATE -eq 1 -a $USTATE -eq 1 ]; then
+    STATE=$STATE_WARNING
+elif [ $SSTATE -eq 2 -a $USTATE -eq 2 ]; then
+    STATE=$STATE_CRITICAL
+elif [ $SSTATE -eq 3 -a $USTATE -eq 3 ]; then
+    STATE=$STATE_UNKNOWN
+elif [ $SSTATE -eq 3 -o $USTATE -eq 3 ]; then
+    STATE=$STATE_UNKNOWN
+elif [ $SSTATE -eq 2 -o $USTATE -eq 2 ]; then
+    STATE=$STATE_CRITICAL
+elif [ $SSTATE -eq 1 -o $USTATE -eq 1 ]; then
+    STATE=$STATE_WARNING
+elif [ $SSTATE -eq 0 -o $USTATE -eq 0 ]; then
+    STATE=$STATE_OK
+else
+  STATE=$STATE_UNKNOWN
+fi
+exit $STATE
+
