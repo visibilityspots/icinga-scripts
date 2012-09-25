@@ -16,12 +16,12 @@ RUNNING_STATUS=`/etc/init.d/jenkins status`
 UPDATE=`yum check-update | grep jenkins | wc -l`
 
 # Compiling the updates message
-if [ -z "$UPDATE" ]; then
-  UPDATES="OK: No updates available"
-  USTATE=$STATE_OK
-else
+if [ "$UPDATE" -gt 0 ]; then
   UPDATES="WARNING: $UPDATE updates available"
   USTATE=$STATE_WARNING
+else
+  UPDATES="OK: No updates available"
+  USTATE=$STATE_OK
 fi
 
 # Compiling the service message
