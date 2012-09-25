@@ -3,6 +3,8 @@ Icinga-scripts
 
 Customized scripts to use with the icinga (1.6.x) monitoring tool on CentOS 6 machines.
 
+Feel free to share your remarks!
+
 Configuration icinga
 ====================
 
