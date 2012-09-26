@@ -48,14 +48,14 @@ After a few minutes the check should appear into your icinga front-end.
 Jenkins
 =======
 
-Make sure the jenkins service has got the proper permissions (chmod 644 /etc/sysconfig/jenkins). Else the nrpe daemon could not read the output!
+Make sure the jenkins configuration file has got the proper permissions (chmod 644 /etc/sysconfig/jenkins). Else the nrpe daemon could not read the output!
 
 This check will use the output of 
 
 *  the command '/etc/init.d/jenkins status'
 *  counts the updates related to jenkins 'yum check-update | grep jenkins | wc -l'
 *  checks if the config file '/var/lib/jenkins/config.xml' is still present
-*  ( if you comment out lines 18 & 58 the script from Eric Blanchard will be used to get total number of jobs of the jenkins instance -  https://github.com/Ericbla/check_jenkins/blob/master/check_jenkins.pl )
+*  ( if you comment out lines 18 and 58 the script from Eric Blanchard will be used to get total number of jobs of the jenkins instance -  https://github.com/Ericbla/check_jenkins/blob/master/check_jenkins.pl )
 
 to throw some messages to the icinga server:
 
@@ -70,4 +70,41 @@ to throw some messages to the icinga server:
 
 Example output Status Information in icinga:
 
-OK: jenkins (pid 29397) is running... / OK: No updates available / OK: Config file /var/lib/jenkins/config.xml is present / OK: jobs count: 95 - jobs=95:: passed=95 failed=0:100:100 disabled=0 running=0 
+OK: jenkins (pid 29397) is running... / OK: No updates available / OK: Config file /var/lib/jenkins/config.xml is present / 
+
+Optional output when using the script will be added to this previous line:
+--------------------------------------------------------------------------
+OK: jobs count: 95 - jobs=95:: passed=95 failed=0:100:100 disabled=0 running=0
+
+Bacula
+======
+
+Make sure the bconsole configuration file has got the proper permissions (chmod 644 /etc/bacula/bconsole.conf). Else the nrpe daemon could not read the output!
+
+This check will use the output of
+
+*  the command '/etc/init.d/bacula-fd status'
+*  counts the updates related to jenkins 'yum check-update | grep bacula | wc -l'
+*  checks if the config file '/etc/bacula/bacula-fd.conf' is still present
+*  ( if you comment out lines 18 and 78, and comment line 57 the script from Michael Wyraz will be used to get the time since the last backup has been taken. By default, exceeding 24hrs the warning state is initialized, more than 48hrs it will become critical - http://exchange.nagios.org/directory/Plugins/Backup-and-Recovery/Bacula/check_bacula_lastbackup-2Epl/details)
+
+to throw some messages to the icinga server:
+
+        OK status:
+        OK: bacula-fd (pid  XXXX) is running / OK: No updates available / OK: Config file /etc/bacula/bacula-fd.conf is present
+
+        Warning status:
+        WARNING: bacula-fd (pid  XXXX) is stopped / WARNING: X updates available / OK: Config file /etc/bacula/bacula-fd.conf is present
+
+        Critical status:
+        CRITICAL: bacula-fd is not running / OK or WARNING state about updates overridden by the CRITICAL state of the service / Critical: Config file /etc/bacula/bacula-fd.conf
+
+Example output Status Information in icinga:
+
+Without the optional script:
+---------------------------
+OK: bacula-fd (pid 30335) is running... / OK: No updates available / OK: Config file /etc/bacula/bacula-fd.conf is present
+
+Optional output when using the script will be added to this previous line:
+--------------------------------------------------------------------------
+OK: Last backup for asturias was 14:52 hours ago. 
