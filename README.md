@@ -3,6 +3,8 @@ Icinga-scripts
 
 Customized scripts to use with the icinga (1.6.x) monitoring tool on CentOS 6 machines.
 
+Those scripts should be stored into the nagios plugin (/usr/lib64/nagios/plugins) folder of the hosts you want to monitor, they require the utils.pm library from the icinga instance. Using the NRPE daemon they will be executed. 
+
 Feel free to share your remarks!
 
 Configuration icinga
@@ -68,4 +70,4 @@ to throw some messages to the icinga server:
 
 Example output Status Information in icinga:
 
-jenkins (pid 29397) is running... / OK: No updates available / OK: Config file /var/lib/jenkins/config.xml is present / OK: jobs count: 95 - jobs=95:: passed=95 failed=0:100:100 disabled=0 running=0 
+OK: jenkins (pid 29397) is running... / OK: No updates available / OK: Config file /var/lib/jenkins/config.xml is present / OK: jobs count: 95 - jobs=95:: passed=95 failed=0:100:100 disabled=0 running=0 
