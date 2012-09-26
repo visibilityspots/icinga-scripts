@@ -52,8 +52,6 @@ case "$RUNNING_STATUS" in
    ;;
 esac
 
-SERVICE=$RUNNING_STATUS
-
 # Combing the multiple messages in 1 line and distributing it
 #echo "$SERVICE / $UPDATES / $FILE / $JOBS"
 echo "$SERVICE / $UPDATES / $FILE"
