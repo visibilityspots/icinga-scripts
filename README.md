@@ -53,7 +53,7 @@ This check will use the output of
 *  the command '/etc/init.d/jenkins status'
 *  counts the updates related to jenkins 'yum check-update | grep jenkins | wc -l'
 *  checks if the config file '/var/lib/jenkins/config.xml' is still present
-(*  if you comment out lines 18 & 58 the script from Eric Blanchard will be used to get total number of jobs of the jenkins instance -  https://github.com/Ericbla/check_jenkins/blob/master/check_jenkins.pl )
+*  ( if you comment out lines 18 & 58 the script from Eric Blanchard will be used to get total number of jobs of the jenkins instance -  https://github.com/Ericbla/check_jenkins/blob/master/check_jenkins.pl )
 
 to throw some messages to the icinga server:
 
