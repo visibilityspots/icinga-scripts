@@ -14,6 +14,18 @@ REVISION=`echo '$Revision: 1.00 $' | sed -e 's/[^0-9.]//g'`
 # Retrieving the service status and number of jenkins updates
 RUNNING_STATUS=`/etc/init.d/jenkins status`
 UPDATE=`yum check-update | grep jenkins | wc -l`
+CONFIGFILE="/var/lib/jenkins/config.xml"
+#JOBS=`/usr/lib64/nagios/plugins/check_jenkins_jobs url_to_jenkins_instance
+
+# Compiling the config file message
+if [ -f $CONFIGFILE ];
+then
+   FILE="OK: Config file $CONFIGFILE is present"
+   FSTATE=$STATE_OK
+else
+   FILE="CRITICAL Config file $CONFIGFILE does not exists"
+   FSTATE=$STATE_CRITICAL
+fi
 
 # Compiling the updates message
 if [ "$UPDATE" -gt 0 ]; then
@@ -40,30 +52,32 @@ case "$RUNNING_STATUS" in
    ;;
 esac
 
+SERVICE=$RUNNING_STATUS
+
 # Combing the multiple messages in 1 line and distributing it
-echo "$SERVICE / $UPDATES"
+#echo "$SERVICE / $UPDATES / $FILE / $JOBS"
+echo "$SERVICE / $UPDATES / $FILE"
 
 # Retrieving the correct state for icinga and distributing it
-if [ $SSTATE -lt 0 -o $SSTATE -gt 3 -o $USTATE -lt 0 -o $USTATE -gt 3 ]; then
+if [ $SSTATE -lt 0 -o $SSTATE -gt 3 -o $USTATE -lt 0 -o $USTATE -gt 3 -o $FSTATE -lt 0 -o $FSTATE -gt 3 ]; then
   STATE=$STATE_UNKNOWN
-  elif [ $SSTATE -eq 0 -a $USTATE -eq 0 ]; then
+  elif [ $SSTATE -eq 0 -a $USTATE -eq 0 -a $FSTATE -eq 0 ]; then
     STATE=$STATE_OK
-elif [ $SSTATE -eq 1 -a $USTATE -eq 1 ]; then
+elif [ $SSTATE -eq 1 -a $USTATE -eq 1 -a $FSTATE -eq 1 ]; then
     STATE=$STATE_WARNING
-elif [ $SSTATE -eq 2 -a $USTATE -eq 2 ]; then
+elif [ $SSTATE -eq 2 -a $USTATE -eq 2 -a $FSTATE -eq 2 ]; then
     STATE=$STATE_CRITICAL
-elif [ $SSTATE -eq 3 -a $USTATE -eq 3 ]; then
+elif [ $SSTATE -eq 3 -a $USTATE -eq 3 -a $FSTATE -eq 3 ]; then
     STATE=$STATE_UNKNOWN
-elif [ $SSTATE -eq 3 -o $USTATE -eq 3 ]; then
+elif [ $SSTATE -eq 3 -o $USTATE -eq 3 -o $FSTATE -eq 3 ]; then
     STATE=$STATE_UNKNOWN
-elif [ $SSTATE -eq 2 -o $USTATE -eq 2 ]; then
+elif [ $SSTATE -eq 2 -o $USTATE -eq 2 -o $FSTATE -eq 2 ]; then
     STATE=$STATE_CRITICAL
-elif [ $SSTATE -eq 1 -o $USTATE -eq 1 ]; then
+elif [ $SSTATE -eq 1 -o $USTATE -eq 1 -o $FSTATE -eq 1 ]; then
     STATE=$STATE_WARNING
-elif [ $SSTATE -eq 0 -o $USTATE -eq 0 ]; then
+elif [ $SSTATE -eq 0 -o $USTATE -eq 0 -o $FSTATE -eq 0 ]; then
     STATE=$STATE_OK
 else
   STATE=$STATE_UNKNOWN
 fi
 exit $STATE
-

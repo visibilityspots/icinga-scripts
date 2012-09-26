@@ -53,6 +53,7 @@ This check will use the output of
 *  the command '/etc/init.d/jenkins status'
 *  counts the updates related to jenkins 'yum check-update | grep jenkins | wc -l'
 *  checks if the config file '/var/lib/jenkins/config.xml' is still present
+(*  if you comment out lines 18 & 58 the script from Eric Blanchard will be used to get total number of jobs of the jenkins instance -  https://github.com/Ericbla/check_jenkins/blob/master/check_jenkins.pl )
 
 to throw some messages to the icinga server:
 
@@ -64,3 +65,7 @@ to throw some messages to the icinga server:
 
 	Critical status:
 	CRITICAL: jenkins is not running / OK or WARNING state about updates overridden by the CRITICAL state of the service / Critical: Config file /var/lib/jenkins/config.xml does not exists
+
+Example output Status Information in icinga:
+
+jenkins (pid 29397) is running... / OK: No updates available / OK: Config file /var/lib/jenkins/config.xml is present / OK: jobs count: 95 - jobs=95:: passed=95 failed=0:100:100 disabled=0 running=0 
