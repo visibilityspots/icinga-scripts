@@ -70,11 +70,11 @@ to throw some messages to the icinga server:
 
 Example output Status Information in icinga:
 
-OK: jenkins (pid 29397) is running... / OK: No updates available / OK: Config file /var/lib/jenkins/config.xml is present / 
+        OK: jenkins (pid 29397) is running... / OK: No updates available / OK: Config file /var/lib/jenkins/config.xml is present / 
 
 Optional output when using the script will be added to this previous line:
---------------------------------------------------------------------------
-OK: jobs count: 95 - jobs=95:: passed=95 failed=0:100:100 disabled=0 running=0
+
+        OK: jobs count: 95 - jobs=95:: passed=95 failed=0:100:100 disabled=0 running=0
 
 Bacula
 ======
@@ -102,12 +102,12 @@ to throw some messages to the icinga server:
 Example output Status Information in icinga:
 
 Without the optional script:
----------------------------
-OK: bacula-fd (pid 30335) is running... / OK: No updates available / OK: Config file /etc/bacula/bacula-fd.conf is present
+
+        OK: bacula-fd (pid 30335) is running... / OK: No updates available / OK: Config file /etc/bacula/bacula-fd.conf is present
 
 Optional output when using the script will be added to this previous line:
---------------------------------------------------------------------------
-OK: Last backup for asturias was 14:52 hours ago.
+
+        OK: Last backup for asturias was 14:52 hours ago.
 
 YUM
 ===
@@ -128,4 +128,4 @@ and throw this message to the icinga server:
 
 Example output Status Information in icinga:
 
-OK: Last update performed on 2012-09-26 at 14:29
+        OK: Last update performed on 2012-09-26 at 14:29
