@@ -107,4 +107,25 @@ OK: bacula-fd (pid 30335) is running... / OK: No updates available / OK: Config 
 
 Optional output when using the script will be added to this previous line:
 --------------------------------------------------------------------------
-OK: Last backup for asturias was 14:52 hours ago. 
+OK: Last backup for asturias was 14:52 hours ago.
+
+YUM
+===
+
+!Until now I did not managed to make it work through the NRPE daemon yet, probably a permission issue!
+
+This check will read out the time when the latest update was made on the remote host using the output of
+
+* yum history | grep -n "U" 
+
+and throw this message to the icinga server:
+
+        OK status:
+        OK: Last update performed on YYYY-MM-DD at HH:MM  
+       
+        Warning status:
+        WARNING: Last update performed a long time ago 
+
+Example output Status Information in icinga:
+
+OK: Last update performed on 2012-09-26 at 14:29

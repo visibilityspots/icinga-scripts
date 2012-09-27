@@ -1,0 +1,29 @@
+#!/bin/sh
+#
+# Author:  Jan Collijs
+# Email:   jan.collijs@inuits.eu
+# Date:    September 2012
+# Purpose: Icinga-check to check the time of the last update
+
+PROGNAME=`basename $0`
+PROGPATH=`echo $0 | sed -e 's,[\\/][^\\/][^\\/]*$,,'`
+REVISION=`echo '$Revision: 1.00 $' | sed -e 's/[^0-9.]//g'`
+
+. $PROGPATH/utils.sh
+
+# Retrieving the last update time
+DATE=`yum history | grep -n "U" | head -n 1 | cut -f3 -d'|' | sed 's/^ //g' | cut -f1 -d' '`
+TIME=`yum history | grep -n "U" | head -n 1 | cut -f3 -d'|' | sed 's/^ //g' | cut -f2 -d' '`
+# Compiling the output message
+if [ -z "$DATE" ]; then
+  MESSAGE="WARNING: Last update performed a long time ago"
+  USTATE=$STATE_WARNING
+else
+  MESSAGE="OK: Last update performed on $DATE at $TIME"
+  USTATE=$STATE_OK
+fi
+
+# Distributing the ouput message and exiting with the nagios state
+echo "$MESSAGE"
+exit $STATE
+
