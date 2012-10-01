@@ -29,10 +29,10 @@ fi
 
 # Compiling the updates message
 if [ "$UPDATE" -gt 0 ]; then
-  UPDATES="WARNING: $UPDATE updates available"
+  UPDATES="WARNING: $UPDATE jenkins updates available"
   USTATE=$STATE_WARNING
 else
-  UPDATES="OK: No updates available"
+  UPDATES="OK: No jenkins updates available"
   USTATE=$STATE_OK
 fi
 
