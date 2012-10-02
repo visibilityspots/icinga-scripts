@@ -1,7 +1,7 @@
 Icinga-scripts
 ==============
 
-Customized scripts to use with the icinga (1.6.x) monitoring tool on CentOS 6 machines.
+Customized scripts to use with the icinga (1.6.x) monitoring tool on CentOS 6 machines. I implemented multi OS support using a script from https://github.com/coto/server-easy-install/blob/master/lib/core.sh for the bacula updates.
 
 Those scripts should be stored into the nagios plugin (/usr/lib64/nagios/plugins) folder of the hosts you want to monitor, they require the utils.pm library from the icinga instance. Using the NRPE daemon they will be executed. 
 
@@ -86,7 +86,7 @@ This check will use the output of
 *  the command '/etc/init.d/bacula-fd status'
 *  counts the updates related to jenkins 'yum check-update | grep bacula | wc -l'
 *  checks if the config file '/etc/bacula/bacula-fd.conf' is still present
-*  ( if you comment out lines 18 and 78, and comment line 57 the script from Michael Wyraz will be used to get the time since the last backup has been taken. By default, exceeding 24hrs the warning state is initialized, more than 48hrs it will become critical - http://exchange.nagios.org/directory/Plugins/Backup-and-Recovery/Bacula/check_bacula_lastbackup-2Epl/details)
+*  ( if you comment out line 31, adapt it to the right bacula client name, delete the underlaying declaration of $BACKUP and uncomment line 89 and delete line 90 the script from Michael Wyraz will be used to get the time since the last backup has been taken. By default, exceeding 24hrs the warning state is initialized, more than 48hrs it will become critical - http://exchange.nagios.org/directory/Plugins/Backup-and-Recovery/Bacula/check_bacula_lastbackup-2Epl/details)
 
 to throw some messages to the icinga server:
 
