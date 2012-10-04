@@ -1,0 +1,67 @@
+#!/bin/sh
+#
+# Author:  Jan Collijs
+# Email:   jan.collijs@inuits.eu
+# Date:    October 2012
+# Purpose: Users-check to monitor a the users logged in into a server
+
+PROGNAME=`basename $0`
+PROGPATH=`echo $0 | sed -e 's,[\\/][^\\/][^\\/]*$,,'`
+REVISION=`echo '$Revision: 1.00 $' | sed -e 's/[^0-9.]//g'`
+
+. $PROGPATH/utils.sh
+
+# Retrieving the data from the remote host
+
+NUM=`w -h | wc -l`
+DATE=`date | cut -f5 -d' ' | sed 's/...$//'`
+IDLENUMBER=0
+WARNING="WARNING:"
+
+OUTPUT=$(
+  w -h | {
+    while read x; do
+      IDLE=`echo $x | cut -f5 -d' '`
+      case $IDLE in
+        *"s"*)
+          IDLE=`echo $IDLE | sed 's/....$//'`  
+        ;;
+        *"m"*)
+          IDLE=`echo $IDLE | sed 's/....$//'`  
+        ;;
+        *)
+          IDLE="0"
+        ;;
+      esac      
+      if [ $IDLE -gt '0' ];then
+        IDLEUSERNAME=(`echo $x | cut -f1 -d' '`)
+        IDLEUSERTIME=(`echo $x | cut -f5 -d' '`)
+        IDLES="$IDLES $IDLEUSERNAME passive for $IDLEUSERTIME,"
+      else
+        LOGGEDUSERNAME=(`echo $x | cut -f1 -d' '`)
+        LOGGEDUSERTIME=(`echo $x | cut -f4 -d' '`)
+        LOGGED="$LOGGED $LOGGEDUSERNAME logged in at $LOGGEDUSERTIME,"
+      fi
+    done
+    LOGGED=`echo $LOGGED | sed 's/.$//'`
+    IDLES=`echo $IDLES | sed 's/.$//'`
+    if [[ -z $LOGGED ]];then
+      echo "$WARNING Inactive user(s): $IDLES"
+    elif [[ -z $IDLES ]];then
+      echo "Active user(s): $LOGGED"
+    else
+      echo "Active user(s): $LOGGED | $WARNING Inactive user(s): $IDLES"
+    fi
+  }
+)
+
+echo $OUTPUT 
+case $OUTPUT in
+  *"WARNING"*)
+    STATE=$STATE_WARNING
+  ;;
+  *)
+    STATE=$STATE_OK
+  ;;
+esac
+exit $STATE

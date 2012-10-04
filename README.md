@@ -60,7 +60,7 @@ This check will use the output of
 to throw some messages to the icinga server:
 
 	OK status:
-	OK: jenkins (pid  XXXX) is running / OK: No updates available / OK: Config file /var/lib/jenkins/config.xml is present 
+	OK: jenkins (pid  XXXX) is running... / OK: No updates available / OK: Config file /var/lib/jenkins/config.xml is present 
 
 	Warning status:
 	WARNING: jenkins (pid  XXXX) is stopped / WARNING: X updates available / OK: Config file /var/lib/jenkins/config.xml is present
@@ -68,13 +68,9 @@ to throw some messages to the icinga server:
 	Critical status:
 	CRITICAL: jenkins is not running / OK or WARNING state about updates overridden by the CRITICAL state of the service / Critical: Config file /var/lib/jenkins/config.xml does not exists
 
-Example output Status Information in icinga:
-
-        OK: jenkins (pid 29397) is running... / OK: No updates available / OK: Config file /var/lib/jenkins/config.xml is present / 
-
 Optional output when using the script will be added to this previous line:
 
-        OK: jobs count: 95 - jobs=95:: passed=95 failed=0:100:100 disabled=0 running=0
+        OK: jobs count: XX - jobs=XX:: passed=XX failed=XX:100:100 disabled=0 running=0
 
 Bacula
 ======
@@ -99,15 +95,26 @@ to throw some messages to the icinga server:
         Critical status:
         CRITICAL: bacula-fd is not running / OK or WARNING state about updates overridden by the CRITICAL state of the service / Critical: Config file /etc/bacula/bacula-fd.conf
 
-Example output Status Information in icinga:
-
-Without the optional script:
-
-        OK: bacula-fd (pid 30335) is running... / OK: No updates available / OK: Config file /etc/bacula/bacula-fd.conf is present
-
 Optional output when using the script will be added to this previous line:
 
-        OK: Last backup for asturias was 14:52 hours ago.
+        OK: Last backup for XXXXXX was XX:XX hours ago.
+
+USER
+===
+
+This check will look for the users who are logged into the server by using the output of
+
+* w
+
+and throw this message to the icinga server depending on the idle time (if more than 1 hour idle* then warning):
+
+        OK status:
+        Active user(s): XXXXXX logged in at XX:XX
+
+        Warning status:
+        WARNING: Inactive user(s): XXXXXX passive for XX:XXm
+
+* Idle time is the time since the last shell activity has been made
 
 YUM
 ===
@@ -125,7 +132,3 @@ and throw this message to the icinga server:
        
         Warning status:
         WARNING: Last update performed a long time ago 
-
-Example output Status Information in icinga:
-
-        OK: Last update performed on 2012-09-26 at 14:29
