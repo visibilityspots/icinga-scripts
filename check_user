@@ -16,6 +16,7 @@ REVISION=`echo '$Revision: 1.00 $' | sed -e 's/[^0-9.]//g'`
 NUM=`w -h | wc -l`
 DATE=`date | cut -f5 -d' ' | sed 's/...$//'`
 IDLENUMBER=0
+IDLEMESSAGE="OK:"
 WARNING="WARNING:"
 
 OUTPUT=$(
@@ -24,7 +25,7 @@ OUTPUT=$(
       IDLE=`echo $x | cut -f5 -d' '`
       case $IDLE in
         *"s"*)
-          IDLE=`echo $IDLE | sed 's/....$//'`  
+          IDLE="0" 
         ;;
         *"m"*)
           IDLE=`echo $IDLE | sed 's/....$//'`  
@@ -33,7 +34,7 @@ OUTPUT=$(
           IDLE="0"
         ;;
       esac      
-      if [ $IDLE -gt '0' ];then
+      if [ $IDLE -gt 0 ];then
         IDLEUSERNAME=(`echo $x | cut -f1 -d' '`)
         IDLEUSERTIME=(`echo $x | cut -f5 -d' '`)
         IDLES="$IDLES $IDLEUSERNAME passive for $IDLEUSERTIME,"
