@@ -116,6 +116,24 @@ and throw this message to the icinga server depending on the idle time (if more 
 
 * Idle time is the time since the last shell activity has been made
 
+MEMORY
+======
+
+This check will calculates the free and used percentages of memory an ram of the monitored host using the output of 
+
+* free -m
+
+and throw this message to the icinga server depending on the calculated percentage (if greater than 90 warning state, over 100 = critical):
+
+        OK status:
+        OK: XX% of memory used, XX% is free / OK: XX% of swap used, XX% is free
+
+        Warning status:
+        WARNING: XX% of memory used, only XX% is free / WARNING: XX% of swap used, only XX% is free
+
+        Critical status:
+        CRITICAL: XX% of memory used, XX% is free / CRITICAL: XX% of swap used, XX% is free
+
 YUM
 ===
 

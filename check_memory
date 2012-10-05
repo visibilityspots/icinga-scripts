@@ -1,0 +1,83 @@
+#!/bin/sh
+#
+# Author:  Jan Collijs
+# Email:   jan.collijs@inuits.eu
+# Date:    October 2012
+# Purpose: Icinga-check to check the memory usage of the system
+
+PROGNAME=`basename $0`
+PROGPATH=`echo $0 | sed -e 's,[\\/][^\\/][^\\/]*$,,'`
+REVISION=`echo '$Revision: 1.00 $' | sed -e 's/[^0-9.]//g'`
+
+. $PROGPATH/utils.sh
+
+# Retrieving the data from the server
+MEMORYLISTING=`free -m | grep Mem`
+SWAPLISTING=`free -m | grep Swap`
+
+TOTALMEM=`echo $MEMORYLISTING | cut -f2 -d' '`
+USEDMEM=`echo $MEMORYLISTING | cut -f3 -d' '`
+FREEMEM=`echo $MEMORYLISTING | cut -f4 -d' '`
+
+TOTALSWAP=`echo $SWAPLISTING | cut -f2 -d' '`
+USEDSWAP=`echo $SWAPLISTING | cut -f3 -d' '`
+FREESWAP=`echo $SWAPLISTING | cut -f4 -d' '`
+
+# Calculating the percentages for memory & swap
+USEDMEMPERCENTAGE=$(( $USEDMEM * 100/$TOTALMEM))
+FREEMEMPERCENTAGE=$(( $FREEMEM * 100/$TOTALMEM))
+
+USEDSWAPPERCENTAGE=$(( $USEDSWAP * 100/$TOTALSWAP))
+FREESWAPPERCENTAGE=$(( $FREESWAP * 100/$TOTALSWAP))
+
+# Compiling the memory message & icinga state
+if [ $USEDMEMPERCENTAGE -gt 90 ];then
+  MEMMESSAGE="WARNING: $USEDMEMPERCENTAGE% of memory used, $FREEMEMPERCENTAGE% is free"
+  MSTATE=$STATE_WARNING
+elif [ $USEDMEMPERCENTAGE -gt 100 ];then
+  MEMMESSAGE="CRITICAL: $USEDMEMPERCENTAGE% of memory used, $FREEMEMPERCENTAGE% is free"
+  MSTATE=$STATE_CRITICAL
+else 
+  MEMMESSAGE="OK: $USEDMEMPERCENTAGE% of memory used, $FREEMEMPERCENTAGE% is free"
+  MSTATE=$STATE_OK
+fi
+
+
+# Compiling the swap message & icinga state
+if [ $USEDSWAPPERCENTAGE -gt 90 ];then
+  SWAPMESSAGE="WARNING: $USEDSWAPPERCENTAGE% of swap used, $FREESWAPPERCENTAGE% is free"
+  SSTATE=$STATE_WARNING
+elif [ $USEDSWAPPERCENTAGE -gt 100 ];then
+  SWAPMESSAGE="CRITICAL: $USEDSWAPPERCENTAGE% of swap used, $FREESWAPPERCENTAGE% is free"
+  SSTATE=$STATE_CRITICAL
+else
+  SWAPMESSAGE="OK: $USEDSWAPPERCENTAGE% of swap used, $FREESWAPPERCENTAGE% is free"
+  SSTATE=$STATE_OK
+fi
+
+# Retrieving the correct state for icinga and distributing it
+if [ $SSTATE -lt 0 -o $SSTATE -gt 3 -o $MSTATE -lt 0 -o $MSTATE -gt 3 ]; then
+  STATE=$STATE_UNKNOWN
+  elif [ $SSTATE -eq 0 -a $MSTATE -eq 0 ]; then
+    STATE=$STATE_OK
+elif [ $SSTATE -eq 1 -a $MSTATE -eq 1 ]; then
+    STATE=$STATE_WARNING
+elif [ $SSTATE -eq 2 -a $MSTATE -eq 2 ]; then
+    STATE=$STATE_CRITICAL
+elif [ $SSTATE -eq 3 -a $MSTATE -eq 3 ]; then
+    STATE=$STATE_UNKNOWN
+elif [ $SSTATE -eq 3 -o $MSTATE -eq 3 ]; then
+    STATE=$STATE_UNKNOWN
+elif [ $SSTATE -eq 2 -o $MSTATE -eq 2 ]; then
+    STATE=$STATE_CRITICAL
+elif [ $SSTATE -eq 1 -o $MSTATE -eq 1 ]; then
+    STATE=$STATE_WARNING
+elif [ $SSTATE -eq 0 -o $MSTATE -eq 0 ]; then
+    STATE=$STATE_OK
+else
+  STATE=$STATE_UNKNOWN
+fi
+# Distributing the ouput message and exiting with the nagios state
+echo "$MEMMESSAGE / $SWAPMESSAGE"
+exit $STATE
+
