@@ -18,44 +18,49 @@ DATE=`date | cut -f5 -d' ' | sed 's/...$//'`
 IDLENUMBER=0
 IDLEMESSAGE="OK:"
 WARNING="WARNING:"
+COUNTUSERS=`w | head -1 | cut -f8 -d' '`
 
-OUTPUT=$(
-  w -h | {
-    while read x; do
-      IDLE=`echo $x | cut -f5 -d' '`
-      case $IDLE in
-        *"s"*)
-          IDLE="0" 
-        ;;
-        *"m"*)
-          IDLE=`echo $IDLE | sed 's/....$//'`  
-        ;;
-        *)
-          IDLE="0"
-        ;;
-      esac      
-      if [ $IDLE -gt 0 ];then
-        IDLEUSERNAME=(`echo $x | cut -f1 -d' '`)
-        IDLEUSERTIME=(`echo $x | cut -f5 -d' '`)
-        IDLES="$IDLES $IDLEUSERNAME passive for $IDLEUSERTIME,"
+if [ $COUNTUSERS = 0 ];then
+  OUTPUT="OK: No users logged in"
+else  
+  OUTPUT=$(
+    w -h | {
+      while read x; do
+        IDLE=`echo $x | cut -f5 -d' '`
+        case $IDLE in
+          *"s"*)
+            IDLE="0" 
+          ;;
+          *"m"*)
+            IDLE=`echo $IDLE | sed 's/....$//'`  
+          ;;
+          *)
+            IDLE="0"
+          ;;
+        esac      
+        if [ $IDLE -gt 0 ];then
+          IDLEUSERNAME=(`echo $x | cut -f1 -d' '`)
+          IDLEUSERTIME=(`echo $x | cut -f5 -d' '`)
+          IDLES="$IDLES $IDLEUSERNAME passive for $IDLEUSERTIME,"
+        else
+          LOGGEDUSERNAME=(`echo $x | cut -f1 -d' '`)
+          LOGGEDUSERTIME=(`echo $x | cut -f4 -d' '`)
+          LOGGED="$LOGGED $LOGGEDUSERNAME logged in at $LOGGEDUSERTIME,"
+        fi
+      done
+      LOGGED=`echo $LOGGED | sed 's/.$//'`
+      IDLES=`echo $IDLES | sed 's/.$//'`
+      if [[ -z $LOGGED ]];then
+        echo "$WARNING Inactive user(s): $IDLES"
+      elif [[ -z $IDLES ]];then
+        echo "OK: Active user(s): $LOGGED"
       else
-        LOGGEDUSERNAME=(`echo $x | cut -f1 -d' '`)
-        LOGGEDUSERTIME=(`echo $x | cut -f4 -d' '`)
-        LOGGED="$LOGGED $LOGGEDUSERNAME logged in at $LOGGEDUSERTIME,"
+        echo "OK: Active user(s): $LOGGED / $WARNING Inactive user(s): $IDLES"
       fi
-    done
-    LOGGED=`echo $LOGGED | sed 's/.$//'`
-    IDLES=`echo $IDLES | sed 's/.$//'`
-    if [[ -z $LOGGED ]];then
-      echo "$WARNING Inactive user(s): $IDLES"
-    elif [[ -z $IDLES ]];then
-      echo "Active user(s): $LOGGED"
-    else
-      echo "Active user(s): $LOGGED | $WARNING Inactive user(s): $IDLES"
-    fi
-  }
-)
-
+    }
+  )
+fi
+  
 echo $OUTPUT 
 case $OUTPUT in
   *"WARNING"*)
