@@ -3,7 +3,7 @@
 # Author:  Jan Collijs
 # Email:   jan.collijs@inuits.eu
 # Date:    September 2012
-# Purpose: Icinga-check to check the time of the last update
+# Purpose: Icinga-check to check the time since the last update
 
 PROGNAME=`basename $0`
 PROGPATH=`echo $0 | sed -e 's,[\\/][^\\/][^\\/]*$,,'`
