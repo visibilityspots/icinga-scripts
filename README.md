@@ -99,8 +99,8 @@ Optional output when using the script will be added to this previous line:
 
         OK: Last backup for XXXXXX was XX:XX hours ago.
 
-USER
-===
+User
+====
 
 This check will look for the users who are logged into the server by using the output of
 
@@ -109,14 +109,14 @@ This check will look for the users who are logged into the server by using the o
 and throw this message to the icinga server depending on the idle time (if more than 1 hour idle* then warning):
 
         OK status:
-        Active user(s): XXXXXX logged in at XX:XX
+        OK: Active user(s): XXXXXX logged in at XX:XX or OK: No users logged in
 
         Warning status:
         WARNING: Inactive user(s): XXXXXX passive for XX:XXm
 
 * Idle time is the time since the last shell activity has been made
 
-MEMORY
+Memory
 ======
 
 This check will calculates the free and used percentages of memory an ram of the monitored host using the output of 
@@ -134,7 +134,7 @@ and throw this message to the icinga server depending on the calculated percenta
         Critical status:
         CRITICAL: XX% of memory used, XX% is free / CRITICAL: XX% of swap used, XX% is free
 
-YUM
+Yum
 ===
 
 !Until now I did not managed to make it work through the NRPE daemon yet, probably a permission issue with the files in /etc/yum.repos.d/!
