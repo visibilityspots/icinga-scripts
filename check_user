@@ -12,15 +12,12 @@ REVISION=`echo '$Revision: 1.00 $' | sed -e 's/[^0-9.]//g'`
 . $PROGPATH/utils.sh
 
 # Retrieving the data from the remote host
-
-NUM=`w -h | wc -l`
-DATE=`date | cut -f5 -d' ' | sed 's/...$//'`
-IDLENUMBER=0
-IDLEMESSAGE="OK:"
 WARNING="WARNING:"
-COUNTUSERS=`w | head -1 | cut -f8 -d' '`
+COUNTUSERS=`w -h | wc -l`
+#echo "# users: $COUNTUSERS"
 
-if [ $COUNTUSERS = 0 ];then
+# Compiling the output message
+if [ "$COUNTUSERS" = 0 ];then
   OUTPUT="OK: No users logged in"
 else  
   OUTPUT=$(
@@ -61,7 +58,10 @@ else
   )
 fi
   
+# Sending the output message
 echo $OUTPUT 
+
+# Compiling the icinga exit status
 case $OUTPUT in
   *"WARNING"*)
     STATE=$STATE_WARNING
