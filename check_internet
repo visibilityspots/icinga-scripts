@@ -1,0 +1,42 @@
+#!/bin/sh
+#
+# Author:  Jan Collijs
+# Email:   jan.collijs@inuits.eu
+# Date:    December 2012
+# Purpose: Internet-check to monitor the network connection to the outside
+
+PROGNAME=`basename $0`
+PROGPATH=`echo $0 | sed -e 's,[\\/][^\\/][^\\/]*$,,'`
+REVISION=`echo '$Revision: 1.00 $' | sed -e 's/[^0-9.]//g'`
+
+. $PROGPATH/utils.sh
+
+# Parameters
+URL="http://www.google.com"
+
+# Getting data got by wget command from url
+STATUS=$(wget -T 5 -t 5 --delete-after $URL 2>&1 | grep -i "connecting" | cut -f 5 -d' ')
+
+# Compiling output message depending on data
+if [[ "$STATUS" == *connected* ]]; then
+  CODE=$(wget -T 5 -t 5 --delete-after $URL 2>&1 | grep -i "HTTP request" | cut -f 6 -d' ')
+  case $CODE in
+        *"200"*)
+          OUTPUT="OK: The outgoing connection to $URL is reachable"
+          STATE=$STATE_OK
+        ;;
+        *"404"*)
+          OUTPUT="WARNING: The page $URL is not found"
+          STATE=$STATE_WARNING
+        ;;
+        *)
+        ;;
+  esac
+else
+  OUTPUT="CRITICAL: The outgoing connection to $URL isn't reachable"
+  STATE=$STATE_CRITICAL
+fi
+
+# Sending the output message
+echo $OUTPUT 
+exit $STATE

@@ -134,6 +134,24 @@ and throw this message to the icinga server depending on the calculated percenta
         Critical status:
         CRITICAL: XX% of memory used, XX% is free / CRITICAL: XX% of swap used, XX% is free
 
+INTERNET
+========
+
+This check will see if there is a connection to the outside internet using the output of the wget command
+
+* wget -T 5 -t 5 --delete-after google.com
+
+and throw this message to the icinga server depending on the state of the webpage got from the wget output:
+
+        OK status:
+        OK: The outgoing connection to $URL is reachable
+
+        Warning status:
+        WARNING: The page $URL is not found
+
+        Critical status:
+        CRITICAL: The outgoing connection to $URL isn't reachable
+
 Yum
 ===
 
