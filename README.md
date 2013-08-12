@@ -1,7 +1,7 @@
 Icinga-scripts
 ==============
 
-Customized scripts to use with the icinga (1.6.x) monitoring tool on CentOS 6 machines. I implemented multi OS support using a script from https://github.com/coto/server-easy-install/blob/master/lib/core.sh for the bacula updates.
+Customized scripts to use with the icinga (1.6.x) monitoring tool on CentOS 6 machines. I implemented multi OS support using a script from https://github.com/coto/server-easy-install/blob/master/lib/core.sh for the bacula updates. And check_bacula-lastbackup from Michael Wyraz (http://exchange.nagios.org/directory/Plugins/Backup-and-Recovery/Bacula/check_bacula_lastbackup-2Epl/details) which checks the last bacula backup againts a specific period of hours.
 
 Those scripts should be stored into the nagios plugin (/usr/lib64/nagios/plugins) folder of the hosts you want to monitor, they require the utils.pm library from the icinga instance. Using the NRPE daemon they will be executed. 
 

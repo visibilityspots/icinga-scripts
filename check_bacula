@@ -28,8 +28,8 @@ esac
 
 RUNNING_STATUS=`/etc/init.d/bacula-fd status`
 CONFIGFILE="/etc/bacula/bacula-fd.conf"
-#BACKUP=`/usr/lib64/nagios/plugins/check_bacula-lastbackup -client\=NAME`
-BACKUP="OK"
+CLIENT=`hostname | cut -d '.' -f 1`
+BACKUP=`usr/lib64/nagios/plugins/check_bacula-lastbackup -client\=$CLIENT -warningAge\=27`
 
 # Compiling the config file message
 if [ -f $CONFIGFILE ];
