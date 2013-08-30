@@ -152,6 +152,18 @@ and throw this message to the icinga server depending on the state of the webpag
         Critical status:
         CRITICAL: The outgoing connection to $URL isn't reachable
 
+Solr
+====
+
+To monitor a solr instance you could use the check_http and monitor the port the solr instance is running on. It's an easy on but has the disadvantage that you don't know if the instance is running fine. You only now if the instance is running.
+
+So I wrote a custom script, this script is based on the PingRequestHandler (http://lucene.apache.org/solr/4_1_0/solr-core/org/apache/solr/handler/PingRequestHandler.html)
+
+	OK status:
+	OK: solr health check
+	
+	Critical status:
+	CRITICAL: solr health check is failing
 Yum
 ===
 
@@ -169,4 +181,4 @@ and throw this message to the icinga server:
         OK: Last update performed on YYYY-MM-DD at HH:MM  
        
         Warning status:
-        WARNING: Last update performed a long time ago 
+        WARNING: Last update performed a long time ago
