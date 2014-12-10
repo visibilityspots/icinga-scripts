@@ -3,6 +3,7 @@
 # Author:  Jan Collijs
 # Email:   jan.collijs@inuits.eu
 # Date:    October 2012
+# Updated: December 2014 by Omar Reygaert
 # Purpose: Icinga-check to check the memory usage of the system
 
 PROGNAME=`basename $0`
@@ -12,16 +13,14 @@ REVISION=`echo '$Revision: 1.00 $' | sed -e 's/[^0-9.]//g'`
 . $PROGPATH/utils.sh
 
 # Retrieving the data from the server
-MEMORYLISTING=`free -m | grep Mem`
-SWAPLISTING=`free -m | grep Swap`
+TOTALMEM=`vmstat -s -SM | grep "total memory" | cut -f1 -d'M' | tr -d ' '`
+USEDMEM=`vmstat -s -SM | grep " active memory" | cut -f1 -d'M' | tr -d ' '`
+FREEMEM=`vmstat -s -SM | grep "free memory" | cut -f1 -d'M' | tr -d ' '`
+CACHEDMEM=`vmstat -s -SM | grep "swap cache" | cut -f1 -d's' | tr -d ' '`
 
-TOTALMEM=`echo $MEMORYLISTING | cut -f2 -d' '`
-USEDMEM=`echo $MEMORYLISTING | cut -f3 -d' '`
-FREEMEM=`echo $MEMORYLISTING | cut -f4 -d' '`
-
-TOTALSWAP=`echo $SWAPLISTING | cut -f2 -d' '`
-USEDSWAP=`echo $SWAPLISTING | cut -f3 -d' '`
-FREESWAP=`echo $SWAPLISTING | cut -f4 -d' '`
+TOTALSWAP=`vmstat -s -SM | grep "total swap" | cut -f1 -d'M' | tr -d ' '`
+USEDSWAP=`vmstat -s -SM | grep "used swap" | cut -f1 -d'M' | tr -d ' '`
+FREESWAP=`vmstat -s -SM | grep "free swap" | cut -f1 -d'M' | tr -d ' '`
 
 # Calculating the percentages for memory & swap
 USEDMEMPERCENTAGE=$(( $USEDMEM * 100/$TOTALMEM))
@@ -37,23 +36,24 @@ if [ $USEDMEMPERCENTAGE -gt 90 ];then
 elif [ $USEDMEMPERCENTAGE -gt 100 ];then
   MEMMESSAGE="CRITICAL: $USEDMEMPERCENTAGE% of memory used, $FREEMEMPERCENTAGE% is free"
   MSTATE=$STATE_CRITICAL
-else 
+else
   MEMMESSAGE="OK: $USEDMEMPERCENTAGE% of memory used, $FREEMEMPERCENTAGE% is free"
   MSTATE=$STATE_OK
 fi
 
 
-# Compiling the swap message & icinga state
-if [ $USEDSWAPPERCENTAGE -gt 90 ];then
-  SWAPMESSAGE="WARNING: $USEDSWAPPERCENTAGE% of swap used, $FREESWAPPERCENTAGE% is free"
-  SSTATE=$STATE_WARNING
-elif [ $USEDSWAPPERCENTAGE -gt 100 ];then
-  SWAPMESSAGE="CRITICAL: $USEDSWAPPERCENTAGE% of swap used, $FREESWAPPERCENTAGE% is free"
-  SSTATE=$STATE_CRITICAL
+# Compiling the memory message & icinga state
+if [ $USEDMEMPERCENTAGE -gt $WARNINGMEMPERCENTAGE ];then
+  MEMMESSAGE="WARNING: $USEDMEMPERCENTAGE% of memory active, $FREEMEMPERCENTAGE% is free with $CACHEDMEM cached"
+  MSTATE=$STATE_WARNING
+elif [ $USEDMEMPERCENTAGE -gt $CRITICALMEMPERCENTAGE ];then
+  MEMMESSAGE="CRITICAL: $USEDMEMPERCENTAGE% of memory active, $FREEMEMPERCENTAGE% is free with $CACHEDMEM cached"
+  MSTATE=$STATE_CRITICAL
 else
-  SWAPMESSAGE="OK: $USEDSWAPPERCENTAGE% of swap used, $FREESWAPPERCENTAGE% is free"
-  SSTATE=$STATE_OK
+  MEMMESSAGE="OK: $USEDMEMPERCENTAGE% of memory active, $FREEMEMPERCENTAGE% is free with $CACHEDMEM cached"
+  MSTATE=$STATE_OK
 fi
+
 
 # Retrieving the correct state for icinga and distributing it
 if [ $SSTATE -lt 0 -o $SSTATE -gt 3 -o $MSTATE -lt 0 -o $MSTATE -gt 3 ]; then
