@@ -3,7 +3,7 @@ Icinga-scripts
 
 Customized scripts to use with the icinga (1.6.x) monitoring tool on CentOS 6 machines. I implemented multi OS support using a script from https://github.com/coto/server-easy-install/blob/master/lib/core.sh for the bacula updates. And check_bacula-lastbackup from Michael Wyraz (http://exchange.nagios.org/directory/Plugins/Backup-and-Recovery/Bacula/check_bacula_lastbackup-2Epl/details) which checks the last bacula backup againts a specific period of hours.
 
-Those scripts should be stored into the nagios plugin (/usr/lib64/nagios/plugins) folder of the hosts you want to monitor, they require the utils.pm library from the icinga instance. Using the NRPE daemon they will be executed. 
+Those scripts should be stored into the nagios plugin (/usr/lib64/nagios/plugins) folder of the hosts you want to monitor, they require the utils.pm library from the icinga instance. Using the NRPE daemon they will be executed.
 
 Feel free to share your remarks!
 
@@ -16,9 +16,9 @@ Server side:
 Add the commands to the file '/etc/icinga/objects/commands.cfg' like this:
 
 	define command {
-		command_name    check_NAME	
+		command_name    check_NAME
 		command_line    $USER1$/check_NAME
-	}	
+	}
 
 To configure the specified service this config is needed for a node in '/etc/icinga/objects/services':
 
@@ -50,7 +50,7 @@ Jenkins
 
 Make sure the jenkins configuration file has got the proper permissions (chmod 644 /etc/sysconfig/jenkins). Else the nrpe daemon could not read the output!
 
-This check will use the output of 
+This check will use the output of
 
 *  the command '/etc/init.d/jenkins status'
 *  counts the updates related to jenkins 'yum check-update | grep jenkins | wc -l'
@@ -60,7 +60,7 @@ This check will use the output of
 to throw some messages to the icinga server:
 
 	OK status:
-	OK: jenkins (pid  XXXX) is running... / OK: No updates available / OK: Config file /var/lib/jenkins/config.xml is present 
+	OK: jenkins (pid  XXXX) is running... / OK: No updates available / OK: Config file /var/lib/jenkins/config.xml is present
 
 	Warning status:
 	WARNING: jenkins (pid  XXXX) is stopped / WARNING: X updates available / OK: Config file /var/lib/jenkins/config.xml is present
@@ -119,9 +119,9 @@ and throw this message to the icinga server depending on the idle time (if more 
 Memory
 ======
 
-This check will calculates the free and used percentages of memory an ram of the monitored host using the output of 
+This check will calculates the free and used percentages of memory an ram of the monitored host using the output of
 
-* free -m
+* vmstat -s
 
 and throw this message to the icinga server depending on the calculated percentage (if greater than 90 warning state, over 100 = critical):
 
@@ -161,7 +161,7 @@ So I wrote a custom script, this script is based on the PingRequestHandler (http
 
 	OK status:
 	OK: solr health check
-	
+
 	Critical status:
 	CRITICAL: solr health check is failing
 Yum
@@ -173,12 +173,12 @@ The goal is to make it work together with the yum script on https://code.google.
 
 This check will read out the time when the latest update was made on the remote host using the output of
 
-* yum history | grep -n "U" 
+* yum history | grep -n "U"
 
 and throw this message to the icinga server:
 
         OK status:
-        OK: Last update performed on YYYY-MM-DD at HH:MM  
-       
+        OK: Last update performed on YYYY-MM-DD at HH:MM
+
         Warning status:
         WARNING: Last update performed a long time ago

@@ -12,6 +12,11 @@ REVISION=`echo '$Revision: 1.00 $' | sed -e 's/[^0-9.]//g'`
 
 . $PROGPATH/utils.sh
 
+WARNINGMEMPERCENTAGE=80
+CRITICALMEMPERCENTAGE=90
+WARNINGSWAOPERCENTAGE=25
+CRITICALSWAPPERCENTAGE=50
+
 # Retrieving the data from the server
 TOTALMEM=`vmstat -s -SM | grep "total memory" | cut -f1 -d'M' | tr -d ' '`
 USEDMEM=`vmstat -s -SM | grep " active memory" | cut -f1 -d'M' | tr -d ' '`
