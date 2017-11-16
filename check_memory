@@ -47,18 +47,17 @@ else
 fi
 
 
-# Compiling the memory message & icinga state
-if [ $USEDMEMPERCENTAGE -gt $WARNINGMEMPERCENTAGE ];then
-  MEMMESSAGE="WARNING: $USEDMEMPERCENTAGE% of memory active, $FREEMEMPERCENTAGE% is free with $CACHEDMEM cached"
-  MSTATE=$STATE_WARNING
-elif [ $USEDMEMPERCENTAGE -gt $CRITICALMEMPERCENTAGE ];then
-  MEMMESSAGE="CRITICAL: $USEDMEMPERCENTAGE% of memory active, $FREEMEMPERCENTAGE% is free with $CACHEDMEM cached"
-  MSTATE=$STATE_CRITICAL
+# Compiling the swap message & icinga state
+if [ $USEDSWAPPERCENTAGE -gt 25 ];then
+  SWAPMESSAGE="WARNING: $USEDSWAPPERCENTAGE% of swap used, only $FREESWAPPERCENTAGE% is free"
+  SSTATE=$STATE_WARNING
+elif [ $USEDSWAPPERCENTAGE -gt 50 ];then
+  SWAPMESSAGE="CRITICAL: $USEDSWAPPERCENTAGE% of swap used, $FREESWAPPERCENTAGE% is free"
+  SSTATE=$STATE_CRITICAL
 else
-  MEMMESSAGE="OK: $USEDMEMPERCENTAGE% of memory active, $FREEMEMPERCENTAGE% is free with $CACHEDMEM cached"
-  MSTATE=$STATE_OK
+  SWAPMESSAGE="OK: $USEDSWAPPERCENTAGE% of swap used, $FREESWAPPERCENTAGE% is free"
+  SSTATE=$STATE_OK
 fi
-
 
 # Retrieving the correct state for icinga and distributing it
 if [ $SSTATE -lt 0 -o $SSTATE -gt 3 -o $MSTATE -lt 0 -o $MSTATE -gt 3 ]; then
