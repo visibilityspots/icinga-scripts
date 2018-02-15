@@ -4,6 +4,8 @@
 # Email:   jan.collijs@inuits.eu
 # Date:    October 2012
 # Updated: December 2014 by Omar Reygaert
+# Updated: February 2018 by Jan Collijs
+#	   Implemented available memory check over free memory based on /proc/meminfo
 # Purpose: Icinga-check to check the memory usage of the system
 
 PROGNAME=`basename $0`
@@ -22,36 +24,39 @@ TOTALMEM=`vmstat -s -SM | grep "total memory" | cut -f1 -d'M' | tr -d ' '`
 USEDMEM=`vmstat -s -SM | grep " active memory" | cut -f1 -d'M' | tr -d ' '`
 FREEMEM=`vmstat -s -SM | grep "free memory" | cut -f1 -d'M' | tr -d ' '`
 CACHEDMEM=`vmstat -s -SM | grep "swap cache" | cut -f1 -d's' | tr -d ' '`
+AVAILABLEMEM=$(cat /proc/meminfo | grep "MemAvailable" | cut -f2 -d':' | tr -s " " | cut -f2 -d' ')
+AVAILABLEMEM=$(($AVAILABLEMEM / 1024 ))
 
 TOTALSWAP=`vmstat -s -SM | grep "total swap" | cut -f1 -d'M' | tr -d ' '`
 USEDSWAP=`vmstat -s -SM | grep "used swap" | cut -f1 -d'M' | tr -d ' '`
 FREESWAP=`vmstat -s -SM | grep "free swap" | cut -f1 -d'M' | tr -d ' '`
 
 # Calculating the percentages for memory & swap
-USEDMEMPERCENTAGE=$(( $USEDMEM * 100/$TOTALMEM))
-FREEMEMPERCENTAGE=$(( $FREEMEM * 100/$TOTALMEM))
+USEDMEMPERCENTAGE=$(( $USEDMEM * 100 / $TOTALMEM))
+FREEMEMPERCENTAGE=$(( $FREEMEM * 100 / $TOTALMEM))
+AVAILABLEMEMPERCENTAGE=$(( $AVAILABLEMEM * 100 / $TOTALMEM))
 
-USEDSWAPPERCENTAGE=$(( $USEDSWAP * 100/$TOTALSWAP))
-FREESWAPPERCENTAGE=$(( $FREESWAP * 100/$TOTALSWAP))
+USEDSWAPPERCENTAGE=$(( $USEDSWAP * 100 / $TOTALSWAP))
+FREESWAPPERCENTAGE=$(( $FREESWAP * 100 / $TOTALSWAP))
 
 # Compiling the memory message & icinga state
-if [ $USEDMEMPERCENTAGE -gt 90 ];then
-  MEMMESSAGE="WARNING: $USEDMEMPERCENTAGE% of memory used, $FREEMEMPERCENTAGE% is free"
+if [ $USEDMEMPERCENTAGE -gt $WARNINGMEMPERCENTAGE ];then
+  MEMMESSAGE="WARNING: $USEDMEMPERCENTAGE% of memory used, $AVAILABLEMEMPERCENTAGE% is available"
   MSTATE=$STATE_WARNING
-elif [ $USEDMEMPERCENTAGE -gt 100 ];then
-  MEMMESSAGE="CRITICAL: $USEDMEMPERCENTAGE% of memory used, $FREEMEMPERCENTAGE% is free"
+elif [ $USEDMEMPERCENTAGE -gt $CRITICALMEMPERCENTAGE ];then
+  MEMMESSAGE="CRITICAL: $USEDMEMPERCENTAGE% of memory used, $AVAILABLEMEMPERCENTAGE% is available"
   MSTATE=$STATE_CRITICAL
 else
-  MEMMESSAGE="OK: $USEDMEMPERCENTAGE% of memory used, $FREEMEMPERCENTAGE% is free"
+  MEMMESSAGE="OK: $USEDMEMPERCENTAGE% of memory used, $AVAILABLEMEMPERCENTAGE% is available"
   MSTATE=$STATE_OK
 fi
 
 
 # Compiling the swap message & icinga state
-if [ $USEDSWAPPERCENTAGE -gt 25 ];then
+if [ $USEDSWAPPERCENTAGE -gt $WARNINGSWAOPERCENTAGE ];then
   SWAPMESSAGE="WARNING: $USEDSWAPPERCENTAGE% of swap used, only $FREESWAPPERCENTAGE% is free"
   SSTATE=$STATE_WARNING
-elif [ $USEDSWAPPERCENTAGE -gt 50 ];then
+elif [ $USEDSWAPPERCENTAGE -gt $CRITICALSWAPPERCENTAGE ];then
   SWAPMESSAGE="CRITICAL: $USEDSWAPPERCENTAGE% of swap used, $FREESWAPPERCENTAGE% is free"
   SSTATE=$STATE_CRITICAL
 else
