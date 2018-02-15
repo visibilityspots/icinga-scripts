@@ -119,20 +119,29 @@ and throw this message to the icinga server depending on the idle time (if more 
 Memory
 ======
 
-This check will calculates the free and used percentages of memory an ram of the monitored host using the output of
+This check will calculates the available and used memory percentages of the monitored host using the output of;
 
-* vmstat -s
+```bash
+$ vmstat -s
+$ cat /proc/meminfo | grep MemAvailable
+```
 
-and throw this message to the icinga server depending on the calculated percentage (if greater than 90 warning state, over 100 = critical):
+```bash
+available
+        Estimation  of how much memory is available for starting new applications, without swapping. Unlike the data provided by the cache or free fields, this field takes into account page cache and also that not all reclaimable memory slabs will be reclaimed
+        due to items being in use (MemAvailable in /proc/meminfo, available on kernels 3.14, emulated on kernels 2.6.27+, otherwise the same as free)
+```
+
+and throw this message to the icinga server depending on the calculated percentage (if less than 15 % available: warning state if less than 10 % available memory: critical);
 
         OK status:
-        OK: XX% of memory used, XX% is free / OK: XX% of swap used, XX% is free
+        OK: XX% of memory available, XX% is used / OK: XX% of swap used, XX% is free
 
         Warning status:
-        WARNING: XX% of memory used, only XX% is free / WARNING: XX% of swap used, only XX% is free
+        WARNING: only XX% of memory available, only XX% is used / WARNING: XX% of swap used, only XX% is free
 
         Critical status:
-        CRITICAL: XX% of memory used, XX% is free / CRITICAL: XX% of swap used, XX% is free
+        CRITICAL: only XX% of memory available, XX% is used / CRITICAL: XX% of swap used, XX% is free
 
 INTERNET
 ========
